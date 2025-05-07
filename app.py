@@ -12,9 +12,6 @@ st.write("This blog writer is capable of writing blogs on any generic topic")
 groq_api_key = st.sidebar.text_input("Enter your Groq API Key", type='password')
 if groq_api_key:
     llm = ChatGroq(model="Llama3-70b-8192",groq_api_key=groq_api_key)
-else:
-    api_key = "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"
-    llm = ChatGroq(model="Llama3-70b-8192",groq_api_key=api_key)
 
 ## response = llm.invoke("hello, how are you?")
 ## print(response.content)
@@ -35,12 +32,12 @@ prompt = ChatPromptTemplate.from_messages([
 parser = StrOutputParser()
 
 user_input = st.text_input("Enter any topic of your interest")
-if not groq_api_key:
-    st.warning('Please enter your own Groq API key to have unlimited access')
-
-if user_input:
+if user_input and groq_api_key:
     with st.spinner("I am thinking..."):
         chain = prompt | llm | parser
         result = chain.invoke({"input": user_input})
         print(result)
         st.success(result)
+else:
+    url = 'https://console.groq.com/docs/quickstart'
+    st.warning("If you don't have Groq API key, get it easily by following the page:" + url)
